@@ -3,13 +3,13 @@ import { Button, Card,Badge, Accordion } from 'react-bootstrap';
 import { Link,useNavigate } from 'react-router-dom';
 import MainScreen from '../../components/MainScreen';
 import { useDispatch, useSelector } from 'react-redux';
-import { listNotes } from '../../actions/notesActions';
+import { deleteNoteAction, listNotes } from '../../actions/notesActions';
 import Loading from "../../components/Loading";
 import ErrorMessage from '../../components/ErrorMessagee';
 
 
 
-function MyNotes() {
+function MyNotes({search}) {
    const dispatch = useDispatch();
 
    const noteList = useSelector(state => state.noteList)
@@ -18,9 +18,23 @@ function MyNotes() {
    const userLogin = useSelector((state) => state.userLogin);
    const { userInfo } = userLogin;
 
+   const noteCreate = useSelector((state) => state.noteCreate);
+   const { success: successCreate } = noteCreate;
+
+   const noteUpdate = useSelector((state) => state.noteUpdate);
+   const { success: successUpdate } = noteUpdate;
+
+   const noteDelete = useSelector((state) => state.noteDelete);
+   const {
+    loading: loadingDelete,
+    error: errorDelete,
+    success: successDelete,
+  } = noteDelete;
+
 
    const deleteHandler = (id) => {
     if(window.confirm("Are you sure?")) {
+      dispatch(deleteNoteAction(id));
      }
    };
 
@@ -31,7 +45,7 @@ function MyNotes() {
      if(!userInfo) {
       navigate("/");
      }
-   },[dispatch])
+   },[dispatch, successCreate, navigate, userInfo, successUpdate, successDelete]);
 
   return (
     <MainScreen title={`Welcome Back ${userInfo.name}..`}>
@@ -40,9 +54,16 @@ function MyNotes() {
           Create New Note
         </Button>
         </Link>
-        {error && <ErrorMessage variant='danger'>{error}</ErrorMessage>}
+       {errorDelete && (
+        <ErrorMessage variant="danger">{errorDelete}</ErrorMessage>
+       )}
+       {loadingDelete && <Loading />}
+       {error && <ErrorMessage variant='danger'>{error}</ErrorMessage>}
        {loading && <Loading />}
-       {notes?.map(note => (
+       {notes?.reverse().filter(filteredNote => (
+         filteredNote.title.toLowerCase().includes(search.toLowerCase())
+       )
+       ).map(note => (
        <Accordion key={note._id}>
         <Accordion.Item eventKey="0">
         <Card style={{margin: 10}}>
