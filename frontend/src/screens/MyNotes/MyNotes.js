@@ -9,6 +9,7 @@ import ErrorMessage from '../../components/ErrorMessagee';
 
 
 
+
 function MyNotes({search}) {
    const dispatch = useDispatch();
 
@@ -54,33 +55,36 @@ function MyNotes({search}) {
           Create New Note
         </Button>
         </Link>
+       {error && <ErrorMessage variant='danger'>{error}</ErrorMessage>}
        {errorDelete && (
         <ErrorMessage variant="danger">{errorDelete}</ErrorMessage>
        )}
-       {loadingDelete && <Loading />}
-       {error && <ErrorMessage variant='danger'>{error}</ErrorMessage>}
        {loading && <Loading />}
+       {loadingDelete && <Loading />}
        {notes?.reverse().filter(filteredNote => (
          filteredNote.title.toLowerCase().includes(search.toLowerCase())
        )
-       ).map(note => (
-       <Accordion key={note._id}>
-        <Accordion.Item eventKey="0">
-        <Card style={{margin: 10}}>
-        <Accordion.Header as={Card.Text} variant="link" eventKey="0">
-          <Card.Header style={{display: "flex",textAlign:"left"}}>
+       )
+       .map(note => (
+    <Accordion key={note._id}>
+       <Card style={{ margin: 10 }} key={note._id}>
+         <Card.Header style={{ display: "flex" }}>
             <span
               style={{
                 color: "black",
                 textDecoration: "none",
                 flex: 1,
-                cursor: "pointer",
                 alignSelf: "center",
                 fontSize: 18,
-                width: '60rem',
               }}
             >
-            {note.title}
+            <Accordion.Header 
+              as={Card.Text}
+              variant="link"
+              eventKey="0"
+            >
+              {note.title}
+            </Accordion.Header>
             </span>
           <div>
             <Button href={`/note/${note._id}`}>Edit</Button>
@@ -93,7 +97,6 @@ function MyNotes({search}) {
             </Button>
           </div>
         </Card.Header>
-        </Accordion.Header>
         <Accordion.Body eventKey="0">
           <Card.Body>
             <h4>
@@ -113,8 +116,8 @@ function MyNotes({search}) {
           </Card.Body>
           </Accordion.Body>
         </Card>
-        </Accordion.Item>
         </Accordion>
+
           ))
         }
     </MainScreen>

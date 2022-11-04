@@ -2,16 +2,18 @@
     min-height: 93vh;
     display: flex;
     align-items: center;
-    background-image: url("../../background1.jpg");
+    background-image: url("../../hero.jpg");
     background-position: center;
     background-size: cover;
 }
 .title {
     font-size: 95px;
+    color: white;
 }
 .subtitle {
     font-size: 25px;
     padding-top: 10px;
+    color: white;
 }
 .intro-text {
     width: 100%;
